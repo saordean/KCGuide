@@ -11,4 +11,12 @@
 #ifdef __OBJC__
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
+
+// GDTK - Added 4/27/2013 to fix compile warnings such as:
+//            MobileCoreServices framework not found in project, or not included in precompiled header.
+//            Network reachability functionality will not be available.  AFHTTPClient.h
+//as per advice from:
+// http://stackoverflow.com/questions/13477109/im-getting-compiler-warnings-with-afnetworking-but-shouldnt-be-how-do-i-fix
+    #import <SystemConfiguration/SystemConfiguration.h>
+    #import <MobileCoreServices/MobileCoreServices.h>
 #endif

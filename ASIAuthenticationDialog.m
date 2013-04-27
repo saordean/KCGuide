@@ -216,10 +216,12 @@ static const NSUInteger kDomainSection = 1;
 
 + (void)dismiss
 {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_6_0
 	if ([sharedDialog respondsToSelector:@selector(presentingViewController)])
 		[[sharedDialog presentingViewController] dismissModalViewControllerAnimated:YES];
 	else 
 		[[sharedDialog parentViewController] dismissModalViewControllerAnimated:YES];
+#endif
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -236,10 +238,12 @@ static const NSUInteger kDomainSection = 1;
 	if (self == sharedDialog) {
 		[[self class] dismiss];
 	} else {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_6_0
 		if ([self respondsToSelector:@selector(presentingViewController)])
 			[[self presentingViewController] dismissModalViewControllerAnimated:YES];
 		else
 			[[self parentViewController] dismissModalViewControllerAnimated:YES];
+#endif
 	}
 }
 
@@ -314,8 +318,13 @@ static const NSUInteger kDomainSection = 1;
 		[self setModalPresentationStyle:UIModalPresentationFormSheet];
 	}
 #endif
+    
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_6_0
 
 	[[self presentingController] presentModalViewController:self animated:YES];
+
+#endif
+    
 }
 
 #pragma mark button callbacks

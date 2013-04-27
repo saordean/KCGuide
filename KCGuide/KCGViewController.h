@@ -10,7 +10,6 @@
 #import <MapKit/MapKit.h>
 
 
-
 @interface KCGViewController : UIViewController<MKMapViewDelegate>
 
 @property (weak, nonatomic) IBOutlet MKMapView *siteMap;

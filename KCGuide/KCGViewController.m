@@ -3,11 +3,17 @@
 //  KCGuide
 //
 //  Created by JerryTaylorKendrick on 4/25/13.
-//  Copyright (c) 2013 DeanAMH. All rights reserved.
+//  Copyright (c) 2013 DeanAMH. All rights reserved.:
 //
 
 #import "KCGViewController.h"
+
+// Preferred networking framework for URL processing
+#import "AFNetworking.h"
+
+// Networking framework used by Ray Wenderlich for URL processing
 #import "ASIHTTPRequest.h"
+
 #import "CurrentLocation.h"
 #import "MBProgressHUD.h"
 
@@ -24,7 +30,8 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-}
+    
+    [AFJSONRequestOperation addAcceptableContentTypes:[NSSet setWithObject:@"text/plain"]];}
 
 - (void)didReceiveMemoryWarning
 {
@@ -118,18 +125,15 @@
     NSString *formatString = [NSString stringWithContentsOfFile:jsonFile encoding:NSUTF8StringEncoding error:nil];
     NSString *json = [NSString stringWithFormat:formatString,
                       centerLocation.latitude, centerLocation.longitude, 0.5*METERS_PER_MILE];
-    
+    NSLog(@"The json variable is set to %@",json);
     // 3
-    
-    NSURL *url = [NSURL URLWithString:@"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=38.9929360,-94.5942483&radius=500&sensor=false&key=AIzaSyATKtn7vfUPQ__vDMuSLaVhsBK7GR_hI64"];
-    
+
     /*
-     
      A Nearby Search request is an HTTP URL of the following form:
      
      https://maps.googleapis.com/maps/api/place/nearbysearch/json&parameters
      
-     My key is: AIzaSyATKtn7vfUPQ__vDMuSLaVhsBK7GR_hI64 
+     My key is: AIzaSyATKtn7vfUPQ__vDMuSLaVhsBK7GR_hI64
      
      Example search:
      
@@ -159,10 +163,42 @@
      types — Restricts the results to Places matching at least one of the specified types. Types should be separated with a pipe symbol (type1|type2|etc). See the list of supported types.
      pagetoken — Returns the next 20 results from a previously run search. Setting a pagetoken parameter will execute a search with the same parameters used previously — all parameters other than pagetoken will be ignored.
      zagatselected — Restrict your search to only those locations that are Zagat selected businesses. This parameter does not require a true or false value, simply including the parameter in the request is sufficient to restrict your search. The zagatselected parameter is experimental, and only available to Places API enterprise customers.
-    */
+     */
+    
+    NSString *location = @"38.9929360,-94.5942483";
+    NSString *key = @"AIzaSyATKtn7vfUPQ__vDMuSLaVhsBK7GR_hI64";
+    
+    NSString *searchString = [NSString stringWithFormat: @"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%@&radius=500&sensor=false&key=%@",location,key];
+    
+    NSString *encodedString = [searchString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    
+    NSURL *url = [NSURL URLWithString:encodedString];
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    
+    
+     
+    AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+     // Success Block code
+     // This code is executed when a web service call is successful
+     //NSLog(@"%@", JSON);
+     //self.movies = JSON;
+     //[self.IMDBTable reloadData];
+     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+     // Failure Block code
+     // This code is executed when a web service call doesn't work.
+     NSLog(@"oops: %@", error);
+     
+     }];
+     [operation start];
+     
+    
+    
     
     
     // 4
+    
+/*
     ASIHTTPRequest *_request = [ASIHTTPRequest requestWithURL:url];
     __weak ASIHTTPRequest *request = _request;
     
@@ -191,7 +227,7 @@
     // Add right after [request startAsynchronous] in refreshTapped action method
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.labelText = @"Loading points of interest...";
-    
+*/
 }
 
 @end

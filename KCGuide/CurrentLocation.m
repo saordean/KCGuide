@@ -55,7 +55,7 @@
     mapItem.name = self.title;
  */
    MKMapItem *mapItem = [MKMapItem alloc];
-   MKPlacemark *placemark = [MKPlacemark alloc];
+   //MKPlacemark *placemark = [MKPlacemark alloc];
   
 
     return mapItem;
