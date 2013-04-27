@@ -1,21 +1,53 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="2519" systemVersion="12A206j" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="2">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="3084" systemVersion="12D78" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="2">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="1856"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="2083"/>
     </dependencies>
     <scenes>
-        <!--class Prefix:identifier View Controller-->
+        <!--View Controller-->
         <scene sceneID="5">
             <objects>
                 <viewController id="2" customClass="KCGViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="3">
-                        <rect key="frame" x="0.0" y="20" width="320" height="460"/>
+                        <rect key="frame" x="0.0" y="20" width="320" height="548"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="xGa-3O-o8s"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3bx-G3-YpS">
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wXr-oY-0QY">
+                                <items>
+                                    <barButtonItem title="Update Sites" id="fo5-wA-8fb">
+                                        <connections>
+                                            <action selector="updateButton:" destination="2" id="HzA-wC-D4h"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="xGa-3O-o8s" firstAttribute="top" secondItem="3" secondAttribute="top" type="default" id="0Kb-Yv-t3v"/>
+                            <constraint firstItem="wXr-oY-0QY" firstAttribute="centerX" secondItem="3bx-G3-YpS" secondAttribute="centerX" type="default" id="ALw-VA-mf7"/>
+                            <constraint firstItem="wXr-oY-0QY" firstAttribute="leading" secondItem="3" secondAttribute="leading" type="default" id="KGz-R6-VOU"/>
+                            <constraint firstItem="wXr-oY-0QY" firstAttribute="trailing" secondItem="3" secondAttribute="trailing" type="default" id="VYI-Xo-dZc"/>
+                            <constraint firstItem="wXr-oY-0QY" firstAttribute="bottom" secondItem="3" secondAttribute="bottom" type="default" id="dDn-ob-4tD"/>
+                            <constraint firstItem="3bx-G3-YpS" firstAttribute="top" secondItem="3" secondAttribute="top" constant="7" id="fG1-HV-ZFc"/>
+                            <constraint firstItem="xGa-3O-o8s" firstAttribute="leading" secondItem="3" secondAttribute="leading" type="default" id="iWz-Rl-86h"/>
+                            <constraint firstItem="xGa-3O-o8s" firstAttribute="trailing" secondItem="3" secondAttribute="trailing" type="default" id="uuJ-iW-VER"/>
+                            <constraint firstItem="xGa-3O-o8s" firstAttribute="bottom" secondItem="3" secondAttribute="bottom" type="default" id="x6p-XX-zvY"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="siteMap" destination="xGa-3O-o8s" id="wgw-md-oxZ"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="45" y="-49"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

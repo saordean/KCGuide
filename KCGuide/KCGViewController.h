@@ -7,7 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MapKit/MapKit.h>
 
-@interface KCGViewController : UIViewController
+
+
+@interface KCGViewController : UIViewController<MKMapViewDelegate>
+
+@property (weak, nonatomic) IBOutlet MKMapView *siteMap;
+@property (weak, nonatomic) IBOutlet MKMapView *mapView;
+- (IBAction)updateButton:(id)sender;
 
 @end
