@@ -118,11 +118,11 @@
                 NSString *iconURL = [results objectForKey:@"icon"];
                 NSString *name = [results objectForKey:@"name"];
                 NSString *address = @"         ";
-                NSLog(@"Name: %@", name);
-                
-                NSDictionary *location = [geometry objectForKey:@"location"];
-                NSNumber * latitude =  [location objectForKey:@"lat"];
-                NSNumber * longitude = [location objectForKey:@"lng"];
+                //NSLog(@"Name: %@", name);
+                NSNumber *latitude = [results valueForKeyPath:@"geometry.location.lat"];
+                //NSLog(@"Latitude %@",latitude);
+                NSNumber *longitude = [results valueForKeyPath:@"geometry.location.lng"];
+                //NSLog(@"Longitude %@",longitude);
 
                 CLLocationCoordinate2D coordinate;
                 coordinate.latitude = latitude.doubleValue;
@@ -259,7 +259,8 @@
                  NSLog(@"Name: %@", name);
                  NSNumber *latitude = [results valueForKeyPath:@"geometry.location.lat"];
                  NSLog(@"Latitude %@",latitude);
-                 //NSNumber *latitude = [location objectForKey:@"lat"];
+                 NSNumber *longitude = [results valueForKeyPath:@"geometry.location.lng"];
+                 NSLog(@"Longitude %@",longitude);
             }
             NSLog(@"----------------------------------- item end ----------------------------------------------------------");
         }
