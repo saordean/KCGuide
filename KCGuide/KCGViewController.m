@@ -31,7 +31,9 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
-    [AFJSONRequestOperation addAcceptableContentTypes:[NSSet setWithObject:@"text/plain"]];}
+    [AFJSONRequestOperation addAcceptableContentTypes:[NSSet setWithObject:@"text/plain"]];
+
+}
 
 - (void)didReceiveMemoryWarning
 {
@@ -43,7 +45,6 @@
 - (void)viewWillAppear:(BOOL)animated {
     // 1
     CLLocationCoordinate2D zoomLocation;
-    
     // Location of Cowork Waldo, Kansas City Missouri
     zoomLocation.latitude = 38.9929360;
     zoomLocation.longitude= -94.5942483;
@@ -52,7 +53,6 @@
     MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(zoomLocation, 0.5*METERS_PER_MILE, 0.5*METERS_PER_MILE);
     
     // 3
-    //[_mapView setRegion:viewRegion animated:YES];
     [_siteMap setRegion:viewRegion animated:YES];
 }
 
@@ -65,11 +65,13 @@
     [location.mapItem openInMapsWithLaunchOptions:launchOptions];
 }
 
+
 - (void)plotSitePositions:(NSData *)responseData {
     for (id<MKAnnotation> annotation in _siteMap.annotations) {
         [_siteMap removeAnnotation:annotation];
     }
     
+    /*
     NSDictionary *root = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil];
     NSArray *data = [root objectForKey:@"data"];
     
@@ -85,49 +87,65 @@
         CurrentLocation *annotation = [[CurrentLocation alloc] initWithName:crimeDescription address:address coordinate:coordinate] ;
         [_siteMap addAnnotation:annotation];
 	}
-}
+    */
+    
+    NSDictionary *location = [NSDictionary alloc];
+    NSString *key = @"AIzaSyATKtn7vfUPQ__vDMuSLaVhsBK7GR_hI64";
+    
+    NSString *searchString = [NSString stringWithFormat: @"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%@&radius=500&sensor=false&key=%@",location,key];
+    NSLog(@"The query URL being presented is: %@", searchString);
+    
+    NSString *encodedString = [searchString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    
+    NSURL *url = [NSURL URLWithString:encodedString];
+    
+    
+    NSURLRequest *theRequest = [NSURLRequest requestWithURL:url];
+    
+    NSURLResponse *resp = nil;
+    NSError *err = nil;
+    
+    NSData *response = [NSURLConnection sendSynchronousRequest: theRequest returningResponse: &resp error: &err];
+    
+    NSDictionary *jsonArray = [NSJSONSerialization JSONObjectWithData:response options:NSJSONReadingMutableContainers error: &err];
+    if (!jsonArray) {
+        NSLog(@"Error parsing JSON: %@", err);
+    } else {
+        for(NSDictionary *results in [jsonArray objectForKey:@"results"]) {
+            //NSLog(@"%@",results);
+            for (NSDictionary *geometry in [results objectForKey:@"geometry"]){
+                //NSLog(@"Geometry: %@", geometry);
+                NSString *name = [results objectForKey:@"name"];
+                NSString *address = @"         ";
+                NSLog(@"Name: %@", name);
+                
+                NSDictionary *location = [geometry objectForKey:@"location"];
+                NSNumber * latitude =  [location objectForKey:@"lat"];
+                NSNumber * longitude = [location objectForKey:@"lng"];
 
-
-
-- (void)plotPoiPositions:(NSData *)responseData {
-    for (id<MKAnnotation> annotation in _siteMap.annotations) {
-        [_siteMap removeAnnotation:annotation];
+                CLLocationCoordinate2D coordinate;
+                coordinate.latitude = latitude.doubleValue;
+                coordinate.longitude = longitude.doubleValue;
+                CurrentLocation *annotation = [[CurrentLocation alloc] initWithName:name address:address coordinate:coordinate] ;
+                [_siteMap addAnnotation:annotation];
+                
+            }
+        }
     }
-    
-    NSDictionary *root = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil];
-    NSArray *data = [root objectForKey:@"data"];
-    
-    for (NSArray *row in data) {
-        NSNumber * latitude = [[row objectAtIndex:22]objectAtIndex:1];
-        NSNumber * longitude = [[row objectAtIndex:22]objectAtIndex:2];
-        NSString * crimeDescription = [row objectAtIndex:18];
-        NSString * address = [row objectAtIndex:14];
-        
-        CLLocationCoordinate2D coordinate;
-        coordinate.latitude = latitude.doubleValue;
-        coordinate.longitude = longitude.doubleValue;
-        CurrentLocation *annotation = [[CurrentLocation alloc] initWithName:crimeDescription address:address coordinate:coordinate] ;
-        [_siteMap addAnnotation:annotation];
-	}
 }
 
 
 
 - (IBAction)updateButton:(id)sender {
     // 1
-    //MKCoordinateRegion mapRegion = [_mapView region];
     MKCoordinateRegion siteRegion = [_siteMap region];
-    //CLLocationCoordinate2D centerLocation = mapRegion.center;
     CLLocationCoordinate2D centerLocation = siteRegion.center;
     
     // 2
-    NSString *jsonFile = [[NSBundle mainBundle] pathForResource:@"command" ofType:@"json"];
-    NSString *formatString = [NSString stringWithContentsOfFile:jsonFile encoding:NSUTF8StringEncoding error:nil];
-    NSString *json = [NSString stringWithFormat:formatString,
-                      centerLocation.latitude, centerLocation.longitude, 0.5*METERS_PER_MILE];
-    NSLog(@"The json variable is set to %@",json);
+    NSString *location = [NSString stringWithFormat:@"%f,%f", centerLocation.latitude, centerLocation.longitude];
+    NSLog(@"The center location coordinates are: %@",location);
+    
     // 3
-
     /*
      A Nearby Search request is an HTTP URL of the following form:
      
@@ -163,41 +181,91 @@
      types — Restricts the results to Places matching at least one of the specified types. Types should be separated with a pipe symbol (type1|type2|etc). See the list of supported types.
      pagetoken — Returns the next 20 results from a previously run search. Setting a pagetoken parameter will execute a search with the same parameters used previously — all parameters other than pagetoken will be ignored.
      zagatselected — Restrict your search to only those locations that are Zagat selected businesses. This parameter does not require a true or false value, simply including the parameter in the request is sufficient to restrict your search. The zagatselected parameter is experimental, and only available to Places API enterprise customers.
+  
+     Search results have the form (in XML):
+     
+     "html_attributions" : [],
+     "next_page_token" : "ClRGAAAADBjoE5AUNvzKEJVCY_kIRi0rnvgC7bL9HRFmSdUSErK3jS70PelvwcI5_-lrvSArkoFI5d-ZYMs5wyNl90dQfgorxTmO5KOHWFmy6wMU_FQSEKSOYMIzGjomO40wCz6WRZ0aFINVsYja6iR06DKpmdyNOrYBZEJk",
+     "results" : [     {
+         "geometry" : {
+             "location" : {
+                  "lat" : 38.99361860,
+                  "lng" : -94.60114209999999
+        },
+             "viewport" : {
+                  "northeast" : {
+                       "lat" : 39.00020490,
+                       "lng" : -94.59393399999999
+                  },
+                  "southwest" : {
+                       "lat" : 38.9850060,
+                       "lng" : -94.6083340
+                  }
+             }
+     },
+     "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/geocode-71.png",
+     "id" : "ff5819fecb085310cfa1e8ec10dce2a644adce8d",
+     "name" : "Ward Parkway",
+     "reference" : "CpQBiQAAALEi8lnxz6Qwgw-5YHWSqvAj3HODpWWszZrFo6zqc-x0bApji_qUJsyWT3Qplymu5t3SXJb8DDM-3NdAs0UAncEHvX9wWuL3vvvMIvZe3sj000Lvt56UUyP0fjP_iWPvn_7Gg5qM_rZyC2laFREuHdhzGbsWlwOBfOvZTM94TxTGDN9FEksrmv7feyLxDpbNhRIQRyFb9xll38aqab-OOUlcFhoUD4UdYCUaFlQ2XEcqiGVrJArgSo8",
+     "types" : [ "neighborhood", "political" ],
+     "vicinity" : "Kansas City"
+     },
+     "status" : "OK"
      */
     
-    NSString *location = @"38.9929360,-94.5942483";
     NSString *key = @"AIzaSyATKtn7vfUPQ__vDMuSLaVhsBK7GR_hI64";
     
     NSString *searchString = [NSString stringWithFormat: @"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%@&radius=500&sensor=false&key=%@",location,key];
-    
+    NSLog(@"The query URL being presented is: %@", searchString);
+
     NSString *encodedString = [searchString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
     NSURL *url = [NSURL URLWithString:encodedString];
-    
+ /*
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    
-    
-     
+
     AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-     // Success Block code
-     // This code is executed when a web service call is successful
-     //NSLog(@"%@", JSON);
-     //self.movies = JSON;
-     //[self.IMDBTable reloadData];
+     // Success Block code.  This code is executed when a web service call is successful
+         NSLog(@"%@", JSON);
+
+         NSError *error = nil;
+        NSArray *siteArray = [NSJSONSerialization JSONObjectWithData:response options:kNilOptions error:&error];
+
      } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-     // Failure Block code
-     // This code is executed when a web service call doesn't work.
-     NSLog(@"oops: %@", error);
-     
+     // Failure Block code.  This code is executed when a web service call doesn't work.
+     NSLog(@"An AFJSON request error occurred: %@", error);
+  
      }];
      [operation start];
-     
+ */
+    NSURLRequest *theRequest = [NSURLRequest requestWithURL:url];
     
+    NSURLResponse *resp = nil;
+    NSError *err = nil;
     
+    NSData *response = [NSURLConnection sendSynchronousRequest: theRequest returningResponse: &resp error: &err];
     
-    
+    NSDictionary *jsonArray = [NSJSONSerialization JSONObjectWithData:response options:NSJSONReadingMutableContainers error: &err];
+    if (!jsonArray) {
+        NSLog(@"Error parsing JSON: %@", err);
+    } else {
+        for(NSDictionary *results in [jsonArray objectForKey:@"results"]) {
+            NSLog(@"----------------------------------- item beginning ----------------------------------------------------");
+            //NSLog(@"%@",results);
+            for (NSDictionary *geometry in [results objectForKey:@"geometry"]){
+                 NSString *name = [results objectForKey:@"name"];
+                 NSLog(@"Name: %@", name);
+                 NSNumber *latitude = [results valueForKeyPath:@"results.geometry.location.lat"];
+                NSLog(@"Latitude %@",latitude);
+                 //NSNumber *latitude = [location objectForKey:@"lat"];
+                 //NSNumber *longitude = [location objectForKey:@"lng"];
+                 //NSLog(@"Latitude: %d",[results objectForKey:@"lat"]);
+                 //NSLog(@"Longitude: %d", [results objectForKey:@"lng"]);
+            }
+            NSLog(@"----------------------------------- item end ----------------------------------------------------------");
+        }
+    }
     // 4
-    
 /*
     ASIHTTPRequest *_request = [ASIHTTPRequest requestWithURL:url];
     __weak ASIHTTPRequest *request = _request;
@@ -205,6 +273,7 @@
     request.requestMethod = @"POST";
     [request addRequestHeader:@"Content-Type" value:@"application/json"];
     [request appendPostData:[json dataUsingEncoding:NSUTF8StringEncoding]];
+    
     // 5
     [request setDelegate:self];
     
@@ -213,12 +282,13 @@
         [MBProgressHUD hideHUDForView:self.view animated:YES];
         NSString *responseString = [request responseString];
         NSLog(@"Response: %@", responseString);
-        [self plotPoiPositions:request.responseData];
+        [self plotSitePositions:request.responseData];
     }];
     
     [request setFailedBlock:^{
         // Add at start of setCompletionBlock and setFailedBlock blocks
-        [MBProgressHUD hideHUDForView:self.view animated:YES];        NSError *error = [request error];
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        NSError *error = [request error];
         NSLog(@"Error: %@", error.localizedDescription);
     }];
     

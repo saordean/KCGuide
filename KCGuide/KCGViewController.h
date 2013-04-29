@@ -13,7 +13,6 @@
 @interface KCGViewController : UIViewController<MKMapViewDelegate>
 
 @property (weak, nonatomic) IBOutlet MKMapView *siteMap;
-@property (weak, nonatomic) IBOutlet MKMapView *mapView;
 - (IBAction)updateButton:(id)sender;
 
 @end

@@ -32,6 +32,7 @@
 		F21ECC951729FF9F00D178F9 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = F21ECC871729F3C400D178F9 /* MBProgressHUD.m */; };
 		F21ECC961729FFD800D178F9 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = F21ECC941729FCD000D178F9 /* Reachability.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F22D7D73172B0753000C1B57 /* CurrentLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = F21ECC891729F4AE00D178F9 /* CurrentLocation.m */; };
+		F2945CA0172DF22600754CBF /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2945C9F172DF22600754CBF /* AddressBook.framework */; };
 		F29BDB15172C3F660089CA95 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = F29BDB05172C3E930089CA95 /* AFHTTPClient.m */; };
 		F29BDB16172C3F6E0089CA95 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F29BDB07172C3E930089CA95 /* AFHTTPRequestOperation.m */; };
 		F29BDB17172C3F750089CA95 /* AFImageRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F29BDB09172C3E930089CA95 /* AFImageRequestOperation.m */; };
@@ -94,6 +95,7 @@
 		F21ECC891729F4AE00D178F9 /* CurrentLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CurrentLocation.m; sourceTree = "<group>"; };
 		F21ECC931729FCD000D178F9 /* Reachability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		F21ECC941729FCD000D178F9 /* Reachability.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		F2945C9F172DF22600754CBF /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		F29BDB04172C3E930089CA95 /* AFHTTPClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AFHTTPClient.h; sourceTree = "<group>"; };
 		F29BDB05172C3E930089CA95 /* AFHTTPClient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClient.m; sourceTree = "<group>"; };
 		F29BDB06172C3E930089CA95 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
@@ -120,6 +122,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F2945CA0172DF22600754CBF /* AddressBook.framework in Frameworks */,
 				F29BDB23172C47760089CA95 /* SystemConfiguration.framework in Frameworks */,
 				F29BDB22172C476A0089CA95 /* MobileCoreServices.framework in Frameworks */,
 				F21ECC6F1729EE3500D178F9 /* CFNetwork.framework in Frameworks */,
@@ -137,6 +140,7 @@
 		F21ECC351729ED2900D178F9 = {
 			isa = PBXGroup;
 			children = (
+				F2945C9F172DF22600754CBF /* AddressBook.framework */,
 				F21ECC6A1729EDEA00D178F9 /* MobileCoreServices.framework */,
 				F21ECC6C1729EE1A00D178F9 /* SystemConfiguration.framework */,
 				F21ECC401729ED2900D178F9 /* Frameworks */,
@@ -180,8 +184,8 @@
 				F21ECC511729ED2900D178F9 /* KCGAppDelegate.m */,
 				F21ECC591729ED2900D178F9 /* MainStoryboard.storyboard */,
 				F21ECC5C1729ED2900D178F9 /* KCGViewController.h */,
-				F21ECC891729F4AE00D178F9 /* CurrentLocation.m */,
 				F21ECC5D1729ED2900D178F9 /* KCGViewController.m */,
+				F21ECC891729F4AE00D178F9 /* CurrentLocation.m */,
 				F21ECC481729ED2900D178F9 /* Supporting Files */,
 			);
 			path = KCGuide;
