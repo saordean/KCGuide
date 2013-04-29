@@ -89,10 +89,10 @@
 	}
     */
     
-    NSDictionary *location = [NSDictionary alloc];
-    NSString *key = @"AIzaSyATKtn7vfUPQ__vDMuSLaVhsBK7GR_hI64";
     
-    NSString *searchString = [NSString stringWithFormat: @"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%@&radius=500&sensor=false&key=%@",location,key];
+    NSString *key = @"AIzaSyATKtn7vfUPQ__vDMuSLaVhsBK7GR_hI64";
+    NSString *urlLocation = @"38.9929360,-94.5942483";
+    NSString *searchString = [NSString stringWithFormat: @"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%@&radius=500&sensor=false&key=%@",urlLocation,key];
     NSLog(@"The query URL being presented is: %@", searchString);
     
     NSString *encodedString = [searchString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
@@ -115,6 +115,7 @@
             //NSLog(@"%@",results);
             for (NSDictionary *geometry in [results objectForKey:@"geometry"]){
                 //NSLog(@"Geometry: %@", geometry);
+                NSString *iconURL = [results objectForKey:@"icon"];
                 NSString *name = [results objectForKey:@"name"];
                 NSString *address = @"         ";
                 NSLog(@"Name: %@", name);
@@ -253,14 +254,12 @@
             NSLog(@"----------------------------------- item beginning ----------------------------------------------------");
             //NSLog(@"%@",results);
             for (NSDictionary *geometry in [results objectForKey:@"geometry"]){
+                 //NSString *iconURL = [results objectForKey:@"icon"];
                  NSString *name = [results objectForKey:@"name"];
                  NSLog(@"Name: %@", name);
-                 NSNumber *latitude = [results valueForKeyPath:@"results.geometry.location.lat"];
-                NSLog(@"Latitude %@",latitude);
+                 NSNumber *latitude = [results valueForKeyPath:@"geometry.location.lat"];
+                 NSLog(@"Latitude %@",latitude);
                  //NSNumber *latitude = [location objectForKey:@"lat"];
-                 //NSNumber *longitude = [location objectForKey:@"lng"];
-                 //NSLog(@"Latitude: %d",[results objectForKey:@"lat"]);
-                 //NSLog(@"Longitude: %d", [results objectForKey:@"lng"]);
             }
             NSLog(@"----------------------------------- item end ----------------------------------------------------------");
         }
