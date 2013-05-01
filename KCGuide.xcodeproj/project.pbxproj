@@ -32,6 +32,10 @@
 		F21ECC951729FF9F00D178F9 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = F21ECC871729F3C400D178F9 /* MBProgressHUD.m */; };
 		F21ECC961729FFD800D178F9 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = F21ECC941729FCD000D178F9 /* Reachability.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F22D7D73172B0753000C1B57 /* CurrentLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = F21ECC891729F4AE00D178F9 /* CurrentLocation.m */; };
+		F247EEB5173161C600C00C2F /* KCGuide_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = F247EEB4173161C600C00C2F /* KCGuide_icon.png */; };
+		F247EEB7173161D900C00C2F /* KCGuide_icon_small.png in Resources */ = {isa = PBXBuildFile; fileRef = F247EEB6173161D900C00C2F /* KCGuide_icon_small.png */; };
+		F247EEB91731625000C00C2F /* KCGuide_icon_small.png in Resources */ = {isa = PBXBuildFile; fileRef = F247EEB81731625000C00C2F /* KCGuide_icon_small.png */; };
+		F247EEBB1731626100C00C2F /* KCGuide_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = F247EEBA1731626100C00C2F /* KCGuide_icon.png */; };
 		F2945CA0172DF22600754CBF /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2945C9F172DF22600754CBF /* AddressBook.framework */; };
 		F29BDB15172C3F660089CA95 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = F29BDB05172C3E930089CA95 /* AFHTTPClient.m */; };
 		F29BDB16172C3F6E0089CA95 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F29BDB07172C3E930089CA95 /* AFHTTPRequestOperation.m */; };
@@ -95,6 +99,10 @@
 		F21ECC891729F4AE00D178F9 /* CurrentLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CurrentLocation.m; sourceTree = "<group>"; };
 		F21ECC931729FCD000D178F9 /* Reachability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		F21ECC941729FCD000D178F9 /* Reachability.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		F247EEB4173161C600C00C2F /* KCGuide_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = KCGuide_icon.png; sourceTree = "<group>"; };
+		F247EEB6173161D900C00C2F /* KCGuide_icon_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = KCGuide_icon_small.png; sourceTree = "<group>"; };
+		F247EEB81731625000C00C2F /* KCGuide_icon_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = KCGuide_icon_small.png; sourceTree = "<group>"; };
+		F247EEBA1731626100C00C2F /* KCGuide_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = KCGuide_icon.png; sourceTree = "<group>"; };
 		F2945C9F172DF22600754CBF /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		F29BDB04172C3E930089CA95 /* AFHTTPClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AFHTTPClient.h; sourceTree = "<group>"; };
 		F29BDB05172C3E930089CA95 /* AFHTTPClient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClient.m; sourceTree = "<group>"; };
@@ -140,6 +148,8 @@
 		F21ECC351729ED2900D178F9 = {
 			isa = PBXGroup;
 			children = (
+				F247EEBA1731626100C00C2F /* KCGuide_icon.png */,
+				F247EEB81731625000C00C2F /* KCGuide_icon_small.png */,
 				F2945C9F172DF22600754CBF /* AddressBook.framework */,
 				F21ECC6A1729EDEA00D178F9 /* MobileCoreServices.framework */,
 				F21ECC6C1729EE1A00D178F9 /* SystemConfiguration.framework */,
@@ -194,6 +204,8 @@
 		F21ECC481729ED2900D178F9 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				F247EEB6173161D900C00C2F /* KCGuide_icon_small.png */,
+				F247EEB4173161C600C00C2F /* KCGuide_icon.png */,
 				F21ECC491729ED2900D178F9 /* KCGuide-Info.plist */,
 				F21ECC4A1729ED2900D178F9 /* InfoPlist.strings */,
 				F21ECC4D1729ED2900D178F9 /* main.m */,
@@ -326,6 +338,10 @@
 				F21ECC561729ED2900D178F9 /* Default@2x.png in Resources */,
 				F21ECC581729ED2900D178F9 /* Default-568h@2x.png in Resources */,
 				F21ECC5B1729ED2900D178F9 /* MainStoryboard.storyboard in Resources */,
+				F247EEB5173161C600C00C2F /* KCGuide_icon.png in Resources */,
+				F247EEB7173161D900C00C2F /* KCGuide_icon_small.png in Resources */,
+				F247EEB91731625000C00C2F /* KCGuide_icon_small.png in Resources */,
+				F247EEBB1731626100C00C2F /* KCGuide_icon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

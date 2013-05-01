@@ -12,7 +12,7 @@
 #import "AFNetworking.h"
 
 // Networking framework used by Ray Wenderlich for URL processing
-#import "ASIHTTPRequest.h"
+//#import "ASIHTTPRequest.h"
 
 #import "CurrentLocation.h"
 #import "MBProgressHUD.h"
@@ -26,7 +26,6 @@
 @property (strong, nonatomic) NSURLRequest *theRequest;
 @property (strong, nonatomic) NSURLRequest *request;
 @property (strong, nonatomic) NSURL *url;
-//@property (strong, nonatomic) NSError *err;
 
 @end
 
@@ -49,16 +48,15 @@
 
 
 - (void)viewWillAppear:(BOOL)animated {
-    // 1
+    
     CLLocationCoordinate2D zoomLocation;
     // Location of Cowork Waldo, Kansas City Missouri
     zoomLocation.latitude = 38.9929360;
     zoomLocation.longitude= -94.5942483;
     
-    // 2
     MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(zoomLocation, 0.5*METERS_PER_MILE, 0.5*METERS_PER_MILE);
     
-    // 3
+
     [_siteMap setRegion:viewRegion animated:YES];
 }
 
@@ -77,12 +75,11 @@
         [_siteMap removeAnnotation:annotation];
     }
     
-    NSString *key = @"AIzaSyATKtn7vfUPQ__vDMuSLaVhsBK7GR_hI64";
-    NSString *urlLocation = @"38.9929360,-94.5942483";
-    NSString *searchString = [NSString stringWithFormat: @"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%@&radius=500&sensor=false&key=%@",urlLocation,key];
-    NSLog(@"The query URL being presented is: %@", searchString);
+    //NSString *key = @"AIzaSyATKtn7vfUPQ__vDMuSLaVhsBK7GR_hI64";
+    //NSString *urlLocation = @"38.9929360,-94.5942483";
+    //NSString *searchString = [NSString stringWithFormat: @"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%@&radius=500&sensor=false&key=%@",urlLocation,key];
+    //NSLog(@"The query URL being presented is: %@", searchString);
     
-    //NSURLResponse *resp = nil;
     NSError *err = nil;
     NSDictionary *jsonArray=[NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&err];
     if (!jsonArray) {
@@ -112,28 +109,29 @@
 
 
 - (IBAction)updateButton:(id)sender {
-    // 1
+    // Setting the site map region
     MKCoordinateRegion siteRegion = [_siteMap region];
     CLLocationCoordinate2D centerLocation = siteRegion.center;
     
-    // 2
+    // Getting the center location coordinates
     NSString *location = [NSString stringWithFormat:@"%f,%f", centerLocation.latitude, centerLocation.longitude];
     NSLog(@"The center location coordinates are: %@",location);
     
-    // 3
-   /*
+   /**********************************************************************************
+    *  Description fo the Google Place Nearby Search request and JSON format results *
+    **********************************************************************************
+    
     A Nearby Search request is an HTTP URL of the following form:
      
-    https://maps.googleapis.com/maps/api/place/nearbysearch/json&parameters
+               https://maps.googleapis.com/maps/api/place/nearbysearch/json&parameters
      
-    My key is: AIzaSyATKtn7vfUPQ__vDMuSLaVhsBK7GR_hI64
+    (Note: A registered usage key is required to use Google Place.  My key is: AIzaSyATKtn7vfUPQ__vDMuSLaVhsBK7GR_hI64  )
      
     Example search:
      
     https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=38.9929360,-94.5942483&radius=500&sensor=false&key=AIzaSyATKtn7vfUPQ__vDMuSLaVhsBK7GR_hI64
      
-    where may be either of the following values:-94.5954120     json (recommended) indicates output in JavaScript Object Notation (JSON)
-    xml indicates output as XML
+    The json parameter (recommended) indicates output in JavaScript Object Notation (JSON), xml indicates output as XML
     Certain parameters are required to initiate a Nearby Search request. As is standard in URLs, all parameters are separated
     using the ampersand (&) character.
      
@@ -160,7 +158,7 @@
     pagetoken — Returns the next 20 results from a previously run search. Setting a pagetoken parameter will execute a search with the same parameters used previously — all parameters other than pagetoken will be ignored.
     zagatselected — Restrict your search to only those locations that are Zagat selected businesses. This parameter does not require a true or false value, simply including the parameter in the request is sufficient to restrict your search. The zagatselected parameter is experimental, and only available to Places API enterprise customers.
   
-    Search results have the form (in XML):
+    Search results have the form (in JSON):
      
      "html_attributions" : [],
      "next_page_token" : "ClRGAAAADBjoE5AUNvzKEJVCY_kIRi0rnvgC7bL9HRFmSdUSErK3jS70PelvwcI5_-lrvSArkoFI5d-ZYMs5wyNl90dQfgorxTmO5KOHWFmy6wMU_FQSEKSOYMIzGjomO40wCz6WRZ0aFINVsYja6iR06DKpmdyNOrYBZEJk",
@@ -169,8 +167,8 @@
              "location" : {
                   "lat" : 38.99361860,
                   "lng" : -94.60114209999999
-        },
-             "viewport" : {
+         },
+         "viewport" : {
                   "northeast" : {
                        "lat" : 39.00020490,
                        "lng" : -94.59393399999999
@@ -179,7 +177,7 @@
                        "lat" : 38.9850060,
                        "lng" : -94.6083340
                   }
-             }
+         }
      },
      "icon" : "http://maps.gstatic.com/mapfiles/place_api/icons/geocode-71.png",
      "id" : "ff5819fecb085310cfa1e8ec10dce2a644adce8d",
@@ -189,14 +187,19 @@
      "vicinity" : "Kansas City"
      },
      "status" : "OK"
+    ********************************************************************************************************************
     */
     
+    // Google Place registered key
     NSString *key = @"AIzaSyATKtn7vfUPQ__vDMuSLaVhsBK7GR_hI64";
     
+    // URL string with variables for the "location" and "key" values
     NSString *searchString = [NSString stringWithFormat: @"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%@&radius=500&sensor=false&key=%@",location,key];
-    NSLog(@"The query URL being presented is: %@", searchString);
+    
+    // URL string in encoded format
     NSString *encodedString = [searchString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 
+    // All variable required for the AFSJSONRequestOperation method
     _url = [NSURL URLWithString:encodedString];
     _request = [NSURLRequest requestWithURL:_url];
     //NSURLRequest *theRequest = [NSURLRequest requestWithURL:url];
@@ -206,18 +209,24 @@
     
     //NSData *response = [NSURLConnection sendSynchronousRequest: theRequest returningResponse: &resp error: &err];
     _response = [NSURLConnection sendSynchronousRequest: _theRequest returningResponse: &resp error: &err];
+    if (_response == nil) {
+        NSLog(@"The was problem accessing the Google Place data, try again");
+        return;
+    }
     
     
     AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:self.request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         // Success Block code.  This code is executed when a web service call is successful
         //NSLog(@"Successful AFSONRequestOperation call");
         //NSLog(@"%@", JSON);
+        // Turn progress indicator off
         [MBProgressHUD hideHUDForView:self.view animated:YES];
         //[self plotSitePositions:_response];
         
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         // Failure Block code.  This code is executed when a web service call doesn't work.
         NSLog(@"An AFJSON request error occurred: %@", error);
+        // Turn progress indicator off
         [MBProgressHUD hideHUDForView:self.view animated:YES];
     }];
     [operation start];
@@ -225,10 +234,12 @@
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.labelText = @"Loading points of interest.";
     
-    //[self plotSitePositions:_response];
+    [self plotSitePositions:_response];
     
     
-    
+   /*****************************************************************************************************************************
+    *  Code to test the Web URL and access                                                                                      *
+    *****************************************************************************************************************************
     NSDictionary *jsonArray=[NSJSONSerialization JSONObjectWithData:_response options:NSJSONReadingMutableContainers error:&err];
     if (!jsonArray) {
         NSLog(@"Error parsing JSON: %@", err);
@@ -248,7 +259,8 @@
             NSLog(@"----------------------------------- item end ----------------------------------------------------------");
         }
     }
-
+    ****************************************************************************************************************************   
+    */
 }
 
 @end

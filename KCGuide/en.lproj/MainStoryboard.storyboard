@@ -13,9 +13,9 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="xGa-3O-o8s"/>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="City Guide" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3bx-G3-YpS">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Kansas City Guide" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3bx-G3-YpS">
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="120" id="wRZ-q7-wnb"/>
+                                    <constraint firstAttribute="width" constant="150" id="zgc-fG-kjy"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -34,10 +34,10 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="xGa-3O-o8s" firstAttribute="top" secondItem="3" secondAttribute="top" type="default" id="0Kb-Yv-t3v"/>
+                            <constraint firstItem="3bx-G3-YpS" firstAttribute="centerX" secondItem="wXr-oY-0QY" secondAttribute="centerX" type="default" id="2S5-3X-xAX"/>
                             <constraint firstItem="3bx-G3-YpS" firstAttribute="top" secondItem="3" secondAttribute="top" constant="11" id="Gr3-Lc-nUF"/>
                             <constraint firstItem="wXr-oY-0QY" firstAttribute="leading" secondItem="3" secondAttribute="leading" type="default" id="KGz-R6-VOU"/>
                             <constraint firstItem="wXr-oY-0QY" firstAttribute="trailing" secondItem="3" secondAttribute="trailing" type="default" id="VYI-Xo-dZc"/>
-                            <constraint firstItem="3bx-G3-YpS" firstAttribute="centerX" secondItem="wXr-oY-0QY" secondAttribute="centerX" type="default" id="YBk-n4-QST"/>
                             <constraint firstItem="wXr-oY-0QY" firstAttribute="bottom" secondItem="3" secondAttribute="bottom" type="default" id="dDn-ob-4tD"/>
                             <constraint firstItem="xGa-3O-o8s" firstAttribute="leading" secondItem="3" secondAttribute="leading" type="default" id="iWz-Rl-86h"/>
                             <constraint firstItem="xGa-3O-o8s" firstAttribute="trailing" secondItem="3" secondAttribute="trailing" type="default" id="uuJ-iW-VER"/>
