@@ -22,6 +22,12 @@
 
 @interface KCGViewController ()
 
+@property (strong, nonatomic) NSData *response;
+@property (strong, nonatomic) NSURLRequest *theRequest;
+@property (strong, nonatomic) NSURLRequest *request;
+@property (strong, nonatomic) NSURL *url;
+//@property (strong, nonatomic) NSError *err;
+
 @end
 
 @implementation KCGViewController
@@ -71,70 +77,38 @@
         [_siteMap removeAnnotation:annotation];
     }
     
-    /*
-    NSDictionary *root = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil];
-    NSArray *data = [root objectForKey:@"data"];
-    
-    for (NSArray *row in data) {
-        NSNumber * latitude = [[row objectAtIndex:22]objectAtIndex:1];
-        NSNumber * longitude = [[row objectAtIndex:22]objectAtIndex:2];
-        NSString * crimeDescription = [row objectAtIndex:18];
-        NSString * address = [row objectAtIndex:14];
-        
-        CLLocationCoordinate2D coordinate;
-        coordinate.latitude = latitude.doubleValue;
-        coordinate.longitude = longitude.doubleValue;
-        CurrentLocation *annotation = [[CurrentLocation alloc] initWithName:crimeDescription address:address coordinate:coordinate] ;
-        [_siteMap addAnnotation:annotation];
-	}
-    */
-    
-    
     NSString *key = @"AIzaSyATKtn7vfUPQ__vDMuSLaVhsBK7GR_hI64";
     NSString *urlLocation = @"38.9929360,-94.5942483";
     NSString *searchString = [NSString stringWithFormat: @"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%@&radius=500&sensor=false&key=%@",urlLocation,key];
     NSLog(@"The query URL being presented is: %@", searchString);
     
-    NSString *encodedString = [searchString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    
-    NSURL *url = [NSURL URLWithString:encodedString];
-    
-    
-    NSURLRequest *theRequest = [NSURLRequest requestWithURL:url];
-    
-    NSURLResponse *resp = nil;
+    //NSURLResponse *resp = nil;
     NSError *err = nil;
-    
-    NSData *response = [NSURLConnection sendSynchronousRequest: theRequest returningResponse: &resp error: &err];
-    
-    NSDictionary *jsonArray = [NSJSONSerialization JSONObjectWithData:response options:NSJSONReadingMutableContainers error: &err];
+    NSDictionary *jsonArray=[NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&err];
     if (!jsonArray) {
         NSLog(@"Error parsing JSON: %@", err);
     } else {
         for(NSDictionary *results in [jsonArray objectForKey:@"results"]) {
             //NSLog(@"%@",results);
             for (NSDictionary *geometry in [results objectForKey:@"geometry"]){
-                //NSLog(@"Geometry: %@", geometry);
-                NSString *iconURL = [results objectForKey:@"icon"];
+                //NSString *iconURL = [results objectForKey:@"icon"];
                 NSString *name = [results objectForKey:@"name"];
-                NSString *address = @"         ";
-                //NSLog(@"Name: %@", name);
+                NSLog(@"Name: %@", name);
                 NSNumber *latitude = [results valueForKeyPath:@"geometry.location.lat"];
-                //NSLog(@"Latitude %@",latitude);
+                NSLog(@"Latitude %@",latitude);
                 NSNumber *longitude = [results valueForKeyPath:@"geometry.location.lng"];
-                //NSLog(@"Longitude %@",longitude);
-
+                NSLog(@"Longitude %@",longitude);
+                
+                NSString *address = [[NSString alloc] init];
                 CLLocationCoordinate2D coordinate;
                 coordinate.latitude = latitude.doubleValue;
                 coordinate.longitude = longitude.doubleValue;
                 CurrentLocation *annotation = [[CurrentLocation alloc] initWithName:name address:address coordinate:coordinate] ;
                 [_siteMap addAnnotation:annotation];
-                
             }
         }
     }
 }
-
 
 
 - (IBAction)updateButton:(id)sender {
@@ -147,43 +121,46 @@
     NSLog(@"The center location coordinates are: %@",location);
     
     // 3
-    /*
-     A Nearby Search request is an HTTP URL of the following form:
+   /*
+    A Nearby Search request is an HTTP URL of the following form:
      
-     https://maps.googleapis.com/maps/api/place/nearbysearch/json&parameters
+    https://maps.googleapis.com/maps/api/place/nearbysearch/json&parameters
      
-     My key is: AIzaSyATKtn7vfUPQ__vDMuSLaVhsBK7GR_hI64
+    My key is: AIzaSyATKtn7vfUPQ__vDMuSLaVhsBK7GR_hI64
      
-     Example search:
+    Example search:
      
-     https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=38.9929360,-94.5942483&radius=500&sensor=false&key=AIzaSyATKtn7vfUPQ__vDMuSLaVhsBK7GR_hI64
+    https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=38.9929360,-94.5942483&radius=500&sensor=false&key=AIzaSyATKtn7vfUPQ__vDMuSLaVhsBK7GR_hI64
      
-     where may be either of the following values:-94.5954120     json (recommended) indicates output in JavaScript Object Notation (JSON)
-     xml indicates output as XML
-     Certain parameters are required to initiate a Nearby Search request. As is standard in URLs, all parameters are separated using the ampersand (&) character.
+    where may be either of the following values:-94.5954120     json (recommended) indicates output in JavaScript Object Notation (JSON)
+    xml indicates output as XML
+    Certain parameters are required to initiate a Nearby Search request. As is standard in URLs, all parameters are separated
+    using the ampersand (&) character.
      
-     Required parameters
+    Required parameters
      
-     key — Your application's API key. This key identifies your application for purposes of quota management and so that Places added from your application are made immediately available to your app. Visit the APIs Console to create an API Project and obtain your key.
-     location — The latitude/longitude around which to retrieve Place information. This must be specified as latitude,longitude.
-     radius — Defines the distance (in meters) within which to return Place results. The maximum allowed radius is 50 000 meters. Note that radius must not be included if rankby=distance (described under Optional parameters below) is specified.
-     sensor — Indicates whether or not the Place request came from a device using a location sensor (e.g. a GPS) to determine the location sent in this request. This value must be either true or false.
+    key — Your application's API key. This key identifies your application for purposes of quota management and so that Places 
+          added from your application are made immediately available to your app. Visit the APIs Console to create an API Project
+          and obtain your key.
+    location — The latitude/longitude around which to retrieve Place information. This must be specified as latitude,longitude.
+    radius — Defines the distance (in meters) within which to return Place results. The maximum allowed radius is 50 000 meters. Note that radius must not be included if rankby=distance (described under Optional parameters below) is specified.
+    sensor — Indicates whether or not the Place request came from a device using a location sensor (e.g. a GPS) to determine the location sent in this request. This value must be either true or false.
      
-     Optional parameters
+    Optional parameters
      
-     keyword — A term to be matched against all content that Google has indexed for this Place, including but not limited to name, type, and address, as well as customer reviews and other third-party content.
-     language — The language code, indicating in which language the results should be returned, if possible. See the list of supported languages and their codes. Note that we often update supported languages so this list may not be exhaustive.
+    keyword — A term to be matched against all content that Google has indexed for this Place, including but not limited to name, type, and address, as well as customer reviews and other third-party content.
+    language — The language code, indicating in which language the results should be returned, if possible. See the list of supported languages and their codes. Note that we often update supported languages so this list may not be exhaustive.
      minprice and maxprice (optional) — Restricts results to only those places within the specified range. Valid values range between 0 (most affordable) to 4 (most expensive), inclusive. The exact amount indicated by a specific value will vary from region to region.
-     name — A term to be matched against the names of Places. Results will be restricted to those containing the passed name value. Note that a Place may have additional names associated with it, beyond its listed name. The API will try to match the passed name value against all of these names; as a result, Places may be returned in the results whose listed names do not match the search term, but whose associated names do.
-     opennow — Returns only those Places that are open for business at the time the query is sent. Places that do not specify opening hours in the Google Places database will not be returned if you include this parameter in your query.
-     rankby — Specifies the order in which results are listed. Possible values are:
+    name — A term to be matched against the names of Places. Results will be restricted to those containing the passed name value. Note that a Place may have additional names associated with it, beyond its listed name. The API will try to match the passed name value against all of these names; as a result, Places may be returned in the results whose listed names do not match the search term, but whose associated names do.
+    opennow — Returns only those Places that are open for business at the time the query is sent. Places that do not specify opening hours in the Google Places database will not be returned if you include this parameter in your query.
+    rankby — Specifies the order in which results are listed. Possible values are:
      prominence (default). This option sorts results based on their importance. Ranking will favor prominent places within the specified area. Prominence can be affected by a Place's ranking in Google's index, the number of check-ins from your application, global popularity, and other factors.
-     distance. This option sorts results in ascending order by their distance from the specified location. Ranking results by distance will set a fixed search radius of 50km. One or more of keyword, name, or types is required.
-     types — Restricts the results to Places matching at least one of the specified types. Types should be separated with a pipe symbol (type1|type2|etc). See the list of supported types.
-     pagetoken — Returns the next 20 results from a previously run search. Setting a pagetoken parameter will execute a search with the same parameters used previously — all parameters other than pagetoken will be ignored.
-     zagatselected — Restrict your search to only those locations that are Zagat selected businesses. This parameter does not require a true or false value, simply including the parameter in the request is sufficient to restrict your search. The zagatselected parameter is experimental, and only available to Places API enterprise customers.
+    distance. This option sorts results in ascending order by their distance from the specified location. Ranking results by distance will set a fixed search radius of 50km. One or more of keyword, name, or types is required.
+    types — Restricts the results to Places matching at least one of the specified types. Types should be separated with a pipe symbol (type1|type2|etc). See the list of supported types.
+    pagetoken — Returns the next 20 results from a previously run search. Setting a pagetoken parameter will execute a search with the same parameters used previously — all parameters other than pagetoken will be ignored.
+    zagatselected — Restrict your search to only those locations that are Zagat selected businesses. This parameter does not require a true or false value, simply including the parameter in the request is sufficient to restrict your search. The zagatselected parameter is experimental, and only available to Places API enterprise customers.
   
-     Search results have the form (in XML):
+    Search results have the form (in XML):
      
      "html_attributions" : [],
      "next_page_token" : "ClRGAAAADBjoE5AUNvzKEJVCY_kIRi0rnvgC7bL9HRFmSdUSErK3jS70PelvwcI5_-lrvSArkoFI5d-ZYMs5wyNl90dQfgorxTmO5KOHWFmy6wMU_FQSEKSOYMIzGjomO40wCz6WRZ0aFINVsYja6iR06DKpmdyNOrYBZEJk",
@@ -212,41 +189,47 @@
      "vicinity" : "Kansas City"
      },
      "status" : "OK"
-     */
+    */
     
     NSString *key = @"AIzaSyATKtn7vfUPQ__vDMuSLaVhsBK7GR_hI64";
     
     NSString *searchString = [NSString stringWithFormat: @"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%@&radius=500&sensor=false&key=%@",location,key];
     NSLog(@"The query URL being presented is: %@", searchString);
-
     NSString *encodedString = [searchString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    
-    NSURL *url = [NSURL URLWithString:encodedString];
- /*
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
 
-    AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-     // Success Block code.  This code is executed when a web service call is successful
-         NSLog(@"%@", JSON);
-
-         NSError *error = nil;
-        NSArray *siteArray = [NSJSONSerialization JSONObjectWithData:response options:kNilOptions error:&error];
-
-     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-     // Failure Block code.  This code is executed when a web service call doesn't work.
-     NSLog(@"An AFJSON request error occurred: %@", error);
-  
-     }];
-     [operation start];
- */
-    NSURLRequest *theRequest = [NSURLRequest requestWithURL:url];
-    
+    _url = [NSURL URLWithString:encodedString];
+    _request = [NSURLRequest requestWithURL:_url];
+    //NSURLRequest *theRequest = [NSURLRequest requestWithURL:url];
+    _theRequest = [NSURLRequest requestWithURL:_url];
     NSURLResponse *resp = nil;
     NSError *err = nil;
     
-    NSData *response = [NSURLConnection sendSynchronousRequest: theRequest returningResponse: &resp error: &err];
+    //NSData *response = [NSURLConnection sendSynchronousRequest: theRequest returningResponse: &resp error: &err];
+    _response = [NSURLConnection sendSynchronousRequest: _theRequest returningResponse: &resp error: &err];
     
-    NSDictionary *jsonArray = [NSJSONSerialization JSONObjectWithData:response options:NSJSONReadingMutableContainers error: &err];
+    
+    AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:self.request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        // Success Block code.  This code is executed when a web service call is successful
+        //NSLog(@"Successful AFSONRequestOperation call");
+        //NSLog(@"%@", JSON);
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        //[self plotSitePositions:_response];
+        
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+        // Failure Block code.  This code is executed when a web service call doesn't work.
+        NSLog(@"An AFJSON request error occurred: %@", error);
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+    }];
+    [operation start];
+    // Start progress indicator running
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = @"Loading points of interest.";
+    
+    //[self plotSitePositions:_response];
+    
+    
+    
+    NSDictionary *jsonArray=[NSJSONSerialization JSONObjectWithData:_response options:NSJSONReadingMutableContainers error:&err];
     if (!jsonArray) {
         NSLog(@"Error parsing JSON: %@", err);
     } else {
@@ -265,39 +248,7 @@
             NSLog(@"----------------------------------- item end ----------------------------------------------------------");
         }
     }
-    // 4
-/*
-    ASIHTTPRequest *_request = [ASIHTTPRequest requestWithURL:url];
-    __weak ASIHTTPRequest *request = _request;
-    
-    request.requestMethod = @"POST";
-    [request addRequestHeader:@"Content-Type" value:@"application/json"];
-    [request appendPostData:[json dataUsingEncoding:NSUTF8StringEncoding]];
-    
-    // 5
-    [request setDelegate:self];
-    
-    [request setCompletionBlock:^{
-        // Add at start of setCompletionBlock and setFailedBlock blocks
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
-        NSString *responseString = [request responseString];
-        NSLog(@"Response: %@", responseString);
-        [self plotSitePositions:request.responseData];
-    }];
-    
-    [request setFailedBlock:^{
-        // Add at start of setCompletionBlock and setFailedBlock blocks
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
-        NSError *error = [request error];
-        NSLog(@"Error: %@", error.localizedDescription);
-    }];
-    
-    // 6
-    [request startAsynchronous];
-    // Add right after [request startAsynchronous] in refreshTapped action method
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    hud.labelText = @"Loading points of interest...";
-*/
+
 }
 
 @end
