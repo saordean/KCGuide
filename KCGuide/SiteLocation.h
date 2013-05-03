@@ -1,5 +1,5 @@
 //
-//  CurrentLocation.h
+//  SiteLocation.h
 //  KCGuide
 //
 //  Created by JerryTaylorKendrick on 4/25/13.
@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
 
-@interface CurrentLocation : NSObject <MKAnnotation>
+@interface SiteLocation : NSObject <MKAnnotation>
 
 - (id)initWithName:(NSString*)name address:(NSString*)address coordinate:(CLLocationCoordinate2D)coordinate;
 - (MKMapItem*)mapItem;

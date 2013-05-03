@@ -14,8 +14,10 @@
 // Networking framework used by Ray Wenderlich for URL processing
 //#import "ASIHTTPRequest.h"
 
-#import "CurrentLocation.h"
+#import "SiteLocation.h"
 #import "MBProgressHUD.h"
+#import <CoreLocation/Corelocation.h>
+
 
 #define METERS_PER_MILE 1609.344
 
@@ -27,9 +29,14 @@
 @property (strong, nonatomic) NSURLRequest *request;
 @property (strong, nonatomic) NSURL *url;
 
+
 @end
 
 @implementation KCGViewController
+
+
+@synthesize fliteController;
+@synthesize slt;
 
 - (void)viewDidLoad
 {
@@ -37,7 +44,8 @@
 	// Do any additional setup after loading the view, typically from a nib.
     
     [AFJSONRequestOperation addAcceptableContentTypes:[NSSet setWithObject:@"text/plain"]];
-
+    
+    [self.fliteController say:@"A short statement" withVoice:self.slt];
 }
 
 - (void)didReceiveMemoryWarning
@@ -50,7 +58,31 @@
 - (void)viewWillAppear:(BOOL)animated {
     
     CLLocationCoordinate2D zoomLocation;
-    // Location of Cowork Waldo, Kansas City Missouri
+    
+    //Don't Forget To Adopt CLLocationManagerDelegate  protocol
+    //set up the Location manager
+    CLLocationManager *lm;
+    lm = [[CLLocationManager alloc] init];
+    lm.desiredAccuracy = kCLLocationAccuracyBest;
+    //lm.distanceFilter = DISTANCE_FILTER_VALUE;
+    //lm.delegate = self;
+    [lm startUpdatingLocation];
+    
+    
+    CLLocation *youAreHere = [lm location];
+    
+    CLLocationCoordinate2D coord;
+    // Put LocationManager latitude and longitude info into CLLocationCoordinate2D
+    // for a one shot fill:
+    coord = [youAreHere coordinate];
+    
+    // Zoom to the current location
+    zoomLocation.latitude = coord.latitude;
+    zoomLocation.longitude = coord.longitude;
+    //NSLog(@"Current Latitude: %f, Current Longitude: %f", zoomLocation.latitude, zoomLocation.longitude);
+    
+    
+    // Zoom to the Location of Cowork Waldo, Kansas City Missouri
     zoomLocation.latitude = 38.9929360;
     zoomLocation.longitude= -94.5942483;
     
@@ -60,25 +92,45 @@
     [_siteMap setRegion:viewRegion animated:YES];
 }
 
+// Thie method is used to enble clicking on pinned site locations to bring up detailed information
+- (MKAnnotationView *)siteMap:(MKMapView *)siteMap viewForAnnotation:(id <MKAnnotation>)annotation {
+    static NSString *identifier = @"SiteLocation";
+    NSLog(@"siteMap viewForAnnotation called");
+    if ([annotation isKindOfClass:[SiteLocation class]]) {
+        
+        MKAnnotationView *annotationView = (MKAnnotationView *) [_siteMap dequeueReusableAnnotationViewWithIdentifier:identifier];
+        if (annotationView == nil) {
+            annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+            annotationView.enabled = YES;
+            annotationView.canShowCallout = YES;
+            annotationView.image = [UIImage imageNamed:@"arrest.png"];//here we use a nice image instead of the default pins
+        } else {
+            annotationView.annotation = annotation;
+        }
+        
+        return annotationView;
+    }
+    
+    return nil;
+}
 
-// Add the following method
+
+// This method is used to annotate the map view with pins for each point of interest site found using
+// Google Place "nearby search" URL
 - (void)siteMap:(MKMapView *)siteMap annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control {
-    CurrentLocation *location = (CurrentLocation*)view.annotation;
+    SiteLocation *location = (SiteLocation*)view.annotation;
     
     NSDictionary *launchOptions = @{MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving};
     [location.mapItem openInMapsWithLaunchOptions:launchOptions];
+    
 }
+ 
 
 
 - (void)plotSitePositions:(NSData *)responseData {
     for (id<MKAnnotation> annotation in _siteMap.annotations) {
         [_siteMap removeAnnotation:annotation];
     }
-    
-    //NSString *key = @"AIzaSyATKtn7vfUPQ__vDMuSLaVhsBK7GR_hI64";
-    //NSString *urlLocation = @"38.9929360,-94.5942483";
-    //NSString *searchString = [NSString stringWithFormat: @"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%@&radius=500&sensor=false&key=%@",urlLocation,key];
-    //NSLog(@"The query URL being presented is: %@", searchString);
     
     NSError *err = nil;
     NSDictionary *jsonArray=[NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&err];
@@ -90,17 +142,19 @@
             for (NSDictionary *geometry in [results objectForKey:@"geometry"]){
                 //NSString *iconURL = [results objectForKey:@"icon"];
                 NSString *name = [results objectForKey:@"name"];
-                NSLog(@"Name: %@", name);
+                //NSLog(@"Name: %@", name);
                 NSNumber *latitude = [results valueForKeyPath:@"geometry.location.lat"];
-                NSLog(@"Latitude %@",latitude);
+                //NSLog(@"Latitude %@",latitude);
                 NSNumber *longitude = [results valueForKeyPath:@"geometry.location.lng"];
-                NSLog(@"Longitude %@",longitude);
+                //NSLog(@"Longitude %@",longitude);
                 
-                NSString *address = [[NSString alloc] init];
+                NSString *address = [NSString alloc];
+                address =  [results objectForKey:@"vicinity"];
+                
                 CLLocationCoordinate2D coordinate;
                 coordinate.latitude = latitude.doubleValue;
                 coordinate.longitude = longitude.doubleValue;
-                CurrentLocation *annotation = [[CurrentLocation alloc] initWithName:name address:address coordinate:coordinate] ;
+                SiteLocation *annotation = [[SiteLocation alloc] initWithName:name address:address coordinate:coordinate] ;
                 [_siteMap addAnnotation:annotation];
             }
         }
@@ -115,7 +169,7 @@
     
     // Getting the center location coordinates
     NSString *location = [NSString stringWithFormat:@"%f,%f", centerLocation.latitude, centerLocation.longitude];
-    NSLog(@"The center location coordinates are: %@",location);
+    //NSLog(@"The center location coordinates are: %@",location);
     
    /**********************************************************************************
     *  Description fo the Google Place Nearby Search request and JSON format results *
@@ -187,7 +241,7 @@
      "vicinity" : "Kansas City"
      },
      "status" : "OK"
-    ********************************************************************************************************************
+    ************************************************************************************************************
     */
     
     // Google Place registered key
@@ -214,7 +268,7 @@
         return;
     }
     
-    
+
     AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:self.request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         // Success Block code.  This code is executed when a web service call is successful
         //NSLog(@"Successful AFSONRequestOperation call");
@@ -237,9 +291,9 @@
     [self plotSitePositions:_response];
     
     
-   /*****************************************************************************************************************************
-    *  Code to test the Web URL and access                                                                                      *
-    *****************************************************************************************************************************
+   /******************************************************************************************************
+    *  Code to test the Web URL and access                                                               *
+    ******************************************************************************************************
     NSDictionary *jsonArray=[NSJSONSerialization JSONObjectWithData:_response options:NSJSONReadingMutableContainers error:&err];
     if (!jsonArray) {
         NSLog(@"Error parsing JSON: %@", err);
@@ -259,9 +313,27 @@
             NSLog(@"----------------------------------- item end ----------------------------------------------------------");
         }
     }
-    ****************************************************************************************************************************   
+    ***************************************************************************************************
     */
 }
+
+
+- (FliteController *)fliteController {
+	if (fliteController == nil) {
+		fliteController = [[FliteController alloc] init];
+	}
+	return fliteController;
+}
+
+
+- (Slt *)slt {
+	if (slt == nil) {
+		slt = [[Slt alloc] init];
+	}
+	return slt;
+}
+    
+
 
 @end
 
