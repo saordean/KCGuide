@@ -32,11 +32,37 @@
 
 @end
 
-@implementation KCGViewController
+@implementation KCGViewController 
 
 
 @synthesize fliteController;
 @synthesize slt;
+
+
+
+// This method of the MKMapView class is called when an annotation view (pin) is clicked
+- (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)annotationView
+{
+/*
+   Parameters
+     mapView
+         The map view containing the annotation view.
+      view
+         The annotation view that was selected.
+     Discussion
+        You can use this method to track changes in the selection state of annotation views.
+ */
+    if ([annotationView.annotation isKindOfClass:[MKUserLocation class]]) {
+        return;
+    }
+    
+    //NSLog(@"Title: %@", annotationView.annotation.title);
+    //NSLog(@"Subitle: %@", annotationView.annotation.subtitle);}
+
+    // Say the name of the point of interest and its address
+    NSString *phrase = [NSString stringWithFormat:@"%@ at %@",annotationView.annotation.title, annotationView.annotation.subtitle];
+    [self.fliteController say:phrase  withVoice:self.slt];}
+
 
 - (void)viewDidLoad
 {
@@ -45,8 +71,10 @@
     
     [AFJSONRequestOperation addAcceptableContentTypes:[NSSet setWithObject:@"text/plain"]];
     
-    [self.fliteController say:@"A short statement" withVoice:self.slt];
+    
+    [self.fliteController say:@"Welcome to the Kansas City guide! Please press the Update Sites button for points of interest near you" withVoice:self.slt];
 }
+
 
 - (void)didReceiveMemoryWarning
 {
@@ -68,7 +96,6 @@
     //lm.delegate = self;
     [lm startUpdatingLocation];
     
-    
     CLLocation *youAreHere = [lm location];
     
     CLLocationCoordinate2D coord;
@@ -88,29 +115,30 @@
     
     MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(zoomLocation, 0.5*METERS_PER_MILE, 0.5*METERS_PER_MILE);
     
-
-    [_siteMap setRegion:viewRegion animated:YES];
+    [_mapView setRegion:viewRegion animated:YES];
 }
 
-// Thie method is used to enble clicking on pinned site locations to bring up detailed information
-- (MKAnnotationView *)siteMap:(MKMapView *)siteMap viewForAnnotation:(id <MKAnnotation>)annotation {
+
+// This method is used to create an annotation view for a point of interest on the site map used in this application
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
     static NSString *identifier = @"SiteLocation";
-    NSLog(@"siteMap viewForAnnotation called");
+    //NSLog(@"siteMap viewForAnnotation called");
     if ([annotation isKindOfClass:[SiteLocation class]]) {
         
-        MKAnnotationView *annotationView = (MKAnnotationView *) [_siteMap dequeueReusableAnnotationViewWithIdentifier:identifier];
+        MKAnnotationView *annotationView = (MKAnnotationView *) [_mapView dequeueReusableAnnotationViewWithIdentifier: identifier];
+        
         if (annotationView == nil) {
             annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
             annotationView.enabled = YES;
             annotationView.canShowCallout = YES;
             annotationView.image = [UIImage imageNamed:@"arrest.png"];//here we use a nice image instead of the default pins
+            // Add to siteMap:viewForAnnotation: after setting the image on the annotation view
+            annotationView.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
         } else {
             annotationView.annotation = annotation;
         }
-        
         return annotationView;
     }
-    
     return nil;
 }
 
@@ -121,15 +149,13 @@
     SiteLocation *location = (SiteLocation*)view.annotation;
     
     NSDictionary *launchOptions = @{MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving};
-    [location.mapItem openInMapsWithLaunchOptions:launchOptions];
-    
+   [location.mapItem openInMapsWithLaunchOptions:launchOptions];
 }
- 
 
 
 - (void)plotSitePositions:(NSData *)responseData {
-    for (id<MKAnnotation> annotation in _siteMap.annotations) {
-        [_siteMap removeAnnotation:annotation];
+    for (id<MKAnnotation> annotation in _mapView.annotations) {
+        [_mapView removeAnnotation:annotation];
     }
     
     NSError *err = nil;
@@ -142,7 +168,7 @@
             for (NSDictionary *geometry in [results objectForKey:@"geometry"]){
                 //NSString *iconURL = [results objectForKey:@"icon"];
                 NSString *name = [results objectForKey:@"name"];
-                //NSLog(@"Name: %@", name);
+                //NSLog(@"Name: %@", name );
                 NSNumber *latitude = [results valueForKeyPath:@"geometry.location.lat"];
                 //NSLog(@"Latitude %@",latitude);
                 NSNumber *longitude = [results valueForKeyPath:@"geometry.location.lng"];
@@ -155,7 +181,7 @@
                 coordinate.latitude = latitude.doubleValue;
                 coordinate.longitude = longitude.doubleValue;
                 SiteLocation *annotation = [[SiteLocation alloc] initWithName:name address:address coordinate:coordinate] ;
-                [_siteMap addAnnotation:annotation];
+                [_mapView addAnnotation:annotation];
             }
         }
     }
@@ -164,7 +190,7 @@
 
 - (IBAction)updateButton:(id)sender {
     // Setting the site map region
-    MKCoordinateRegion siteRegion = [_siteMap region];
+    MKCoordinateRegion siteRegion = [_mapView region];
     CLLocationCoordinate2D centerLocation = siteRegion.center;
     
     // Getting the center location coordinates
@@ -291,9 +317,9 @@
     [self plotSitePositions:_response];
     
     
-   /******************************************************************************************************
-    *  Code to test the Web URL and access                                                               *
-    ******************************************************************************************************
+   /****************************************
+    *  Code to test the Web URL and access *
+    ****************************************
     NSDictionary *jsonArray=[NSJSONSerialization JSONObjectWithData:_response options:NSJSONReadingMutableContainers error:&err];
     if (!jsonArray) {
         NSLog(@"Error parsing JSON: %@", err);
@@ -313,7 +339,7 @@
             NSLog(@"----------------------------------- item end ----------------------------------------------------------");
         }
     }
-    ***************************************************************************************************
+    **************************************
     */
 }
 

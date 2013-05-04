@@ -12,16 +12,12 @@
                         <rect key="frame" x="0.0" y="20" width="320" height="548"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="xGa-3O-o8s"/>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Kansas City Guide" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3bx-G3-YpS">
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="150" id="zgc-fG-kjy"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wXr-oY-0QY">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xGa-3O-o8s">
+                                <connections>
+                                    <outlet property="delegate" destination="2" id="duS-pv-4dg"/>
+                                </connections>
+                            </mapView>
+                            <toolbar opaque="NO" contentMode="scaleToFill" restorationIdentifier="" translatesAutoresizingMaskIntoConstraints="NO" id="wXr-oY-0QY">
                                 <items>
                                     <barButtonItem title="Update Sites" id="fo5-wA-8fb">
                                         <connections>
@@ -34,18 +30,16 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="wXr-oY-0QY" firstAttribute="leading" secondItem="3" secondAttribute="leading" type="default" id="KGz-R6-VOU"/>
-                            <constraint firstItem="3bx-G3-YpS" firstAttribute="top" secondItem="3" secondAttribute="top" type="default" id="UFm-HX-VLT"/>
                             <constraint firstItem="wXr-oY-0QY" firstAttribute="trailing" secondItem="3" secondAttribute="trailing" type="default" id="VYI-Xo-dZc"/>
                             <constraint firstItem="wXr-oY-0QY" firstAttribute="bottom" secondItem="3" secondAttribute="bottom" type="default" id="dDn-ob-4tD"/>
                             <constraint firstItem="xGa-3O-o8s" firstAttribute="top" secondItem="3" secondAttribute="top" type="default" id="eAy-PU-zk0"/>
                             <constraint firstItem="xGa-3O-o8s" firstAttribute="bottom" secondItem="3" secondAttribute="bottom" type="default" id="ggG-gw-xtm"/>
                             <constraint firstItem="xGa-3O-o8s" firstAttribute="leading" secondItem="3" secondAttribute="leading" type="default" id="iWz-Rl-86h"/>
-                            <constraint firstItem="xGa-3O-o8s" firstAttribute="centerX" secondItem="3bx-G3-YpS" secondAttribute="centerX" type="default" id="jvU-LI-GqQ"/>
                             <constraint firstItem="xGa-3O-o8s" firstAttribute="trailing" secondItem="3" secondAttribute="trailing" type="default" id="uuJ-iW-VER"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="siteMap" destination="xGa-3O-o8s" id="wgw-md-oxZ"/>
+                        <outlet property="mapView" destination="xGa-3O-o8s" id="0qd-3W-Go4"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4" sceneMemberID="firstResponder"/>
@@ -58,7 +52,7 @@
             <source key="sourceIdentifier" type="project" relativePath="./Classes/KCGViewController.h"/>
             <relationships>
                 <relationship kind="action" name="updateButton:"/>
-                <relationship kind="outlet" name="siteMap" candidateClass="MKMapView"/>
+                <relationship kind="outlet" name="mapView" candidateClass="MKMapView"/>
             </relationships>
         </class>
         <class className="NSLayoutConstraint" superclassName="NSObject">
