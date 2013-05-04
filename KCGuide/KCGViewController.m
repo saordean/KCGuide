@@ -131,7 +131,7 @@
             annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
             annotationView.enabled = YES;
             annotationView.canShowCallout = YES;
-            annotationView.image = [UIImage imageNamed:@"arrest.png"];//here we use a nice image instead of the default pins
+            annotationView.image = [UIImage imageNamed:@"KC_pin.png"];//here we use a nice image instead of the default pins
             // Add to siteMap:viewForAnnotation: after setting the image on the annotation view
             annotationView.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
         } else {

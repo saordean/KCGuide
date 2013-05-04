@@ -56,6 +56,7 @@
 		F29BDB23172C47760089CA95 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F21ECC6C1729EE1A00D178F9 /* SystemConfiguration.framework */; };
 		F2B99E7817332E7100267AE4 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2B99E7717332E7100267AE4 /* AVFoundation.framework */; };
 		F2BFAF1317344AE700D4AC26 /* arrest.png in Resources */ = {isa = PBXBuildFile; fileRef = F2BFAF1217344AE700D4AC26 /* arrest.png */; };
+		F2BFAF151734E3A200D4AC26 /* KC_pin.png in Resources */ = {isa = PBXBuildFile; fileRef = F2BFAF141734E3A200D4AC26 /* KC_pin.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -127,6 +128,7 @@
 		F29BDB20172C41840089CA95 /* UIImageView+AFNetworking.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+AFNetworking.m"; sourceTree = "<group>"; };
 		F2B99E7717332E7100267AE4 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		F2BFAF1217344AE700D4AC26 /* arrest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrest.png; sourceTree = "<group>"; };
+		F2BFAF141734E3A200D4AC26 /* KC_pin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = KC_pin.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -243,6 +245,7 @@
 		F21ECC481729ED2900D178F9 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				F2BFAF141734E3A200D4AC26 /* KC_pin.png */,
 				F2BFAF1217344AE700D4AC26 /* arrest.png */,
 				F247EEB6173161D900C00C2F /* KCGuide_icon_small.png */,
 				F247EEB4173161C600C00C2F /* KCGuide_icon.png */,
@@ -366,6 +369,7 @@
 				F20D44EA1733650C0012914C /* OpenEars2.gram in Resources */,
 				F20D44EB1733650C0012914C /* OpenEarsCorpus.txt in Resources */,
 				F2BFAF1317344AE700D4AC26 /* arrest.png in Resources */,
+				F2BFAF151734E3A200D4AC26 /* KC_pin.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
